@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h2>📈 Stock Dashboard</h2>
+
+<select id="company">
+    <option value="INFY.NS">INFY</option>
+    <option value="TCS.NS">TCS</option>
+    <option value="RELIANCE.NS">RELIANCE</option>
+</select>
+
+<button onclick="loadData()">Load Data</button>
+
+<canvas id="chart" width="600" height="300"></canvas>
+
+<script>
+async function loadData() {
+    const symbol = document.getElementById("company").value;
+
+    const response = await fetch(`http://127.0.0.1:8000/data/${symbol}`);
+    const data = await response.json();
+
+    const labels = data.map(d => d.Date);
+    const prices = data.map(d => d.Close);
+
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: symbol + " Price",
+                data: prices
+            }]
+        }
+    });
+}
+</script>
+
+</body>
+</html>
